@@ -1,0 +1,69 @@
+.register-container {
+  height: 100vh;
+
+  background: linear-gradient(
+      rgba(220,255,220,0.5),
+      rgba(255,255,200,0.5)
+    ),
+    url("https://images.unsplash.com/photo-1500937386664-56d1dfef3854?q=80&w=1920");
+
+  background-size: cover;
+  background-position: center;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.register-card {
+  width: 450px;
+  background: white;
+  padding: 40px;
+  border-radius: 25px;
+
+  text-align: center;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.register-logo {
+  font-size: 60px;
+}
+
+.register-title {
+  color: #2e7d32;
+  margin-bottom: 30px;
+}
+
+.register-input {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 15px;
+
+  border: 1px solid #ddd;
+  border-radius: 10px;
+
+  font-size: 16px;
+}
+
+.register-btn {
+  width: 100%;
+  padding: 15px;
+
+  background: #2e7d32;
+  color: white;
+
+  border: none;
+  border-radius: 10px;
+
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.register-btn:hover {
+  background: #1b5e20;
+}
+
+.login-link {
+  margin-top: 15px;
+}

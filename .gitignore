@@ -1,5 +1,26 @@
-node_modules
+# Node modules
+node_modules/
+Backend/node_modules/
+Frontend/node_modules/
+frontend/node_modules/
+
+# Environment files
 .env
-Backend/node_modules
-Frontend/node_modules
-frontend/node_modules
+Backend/.env
+
+# Uploads
+Backend/uploads/
+
+# AI Dataset
+AI/dataset/
+frontend/PlantVillage-Dataset/
+
+# AI Models
+AI/models/*.keras
+
+# Python
+__pycache__/
+*.pyc
+
+# Logs
+*.log

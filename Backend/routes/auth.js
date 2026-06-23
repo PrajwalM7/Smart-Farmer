@@ -80,5 +80,10 @@ router.post("/login", async (req, res) => {
         });
     }
 });
+router.get("/test", (req, res) => {
+  res.json({
+    message: "Auth Route Working"
+  });
+});
 
 module.exports = router;

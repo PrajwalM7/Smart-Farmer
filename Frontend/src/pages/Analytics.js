@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -15,6 +16,7 @@ import {
 } from "chart.js";
 
 import { Bar, Pie, Line } from "react-chartjs-2";
+import "../App.css";
 
 ChartJS.register(
   CategoryScale,
@@ -31,7 +33,6 @@ ChartJS.register(
 function Analytics() {
   const navigate = useNavigate();
 
-  // Profit Chart
   const profitData = {
     labels: ["Rice", "Maize", "Wheat"],
     datasets: [
@@ -46,8 +47,12 @@ function Analytics() {
       },
     ],
   };
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+};
+  
 
-  // Crop Statistics
   const cropData = {
     labels: ["Rice", "Maize", "Wheat"],
     datasets: [
@@ -62,7 +67,6 @@ function Analytics() {
     ],
   };
 
-  // Weather Trend
   const weatherData = {
     labels: ["Mon", "Tue", "Wed", "Thu", "Fri"],
     datasets: [
@@ -77,128 +81,102 @@ function Analytics() {
   };
 
   return (
-    <div
-      style={{
-        background: "#eef6ee",
-        minHeight: "100vh",
-        padding: "20px",
-      }}
-    >
-      {/* Header */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "25px",
-        }}
-      >
-        <div>
-          <h1 style={{ color: "#2e7d32" }}>
-            🌿 Analytics Dashboard
-          </h1>
+    <div className="analytics-page">
 
-          <p style={{ color: "#555" }}>
-            Insights and Analytics for Smart Farming
-          </p>
+      <div className="analytics-card">
+
+        <div className="analytics-header">
+
+          <div>
+            <h1 className="analytics-title">
+              🌿 Analytics Dashboard
+            </h1>
+
+            <p className="analytics-subtitle">
+              Insights and Analytics for Smart Farming
+            </p>
+          </div>
+
+          <button
+            className="back-btn"
+            onClick={() =>
+              navigate("/dashboard")
+            }
+          >
+            ← Back
+          </button>
+
         </div>
 
-        <button
-          onClick={() => navigate("/dashboard")}
-          style={{
-            background: "#4CAF50",
-            color: "white",
-            border: "none",
-            padding: "10px 15px",
-            borderRadius: "8px",
-            cursor: "pointer",
-          }}
-        >
-          ← Back to Dashboard
-        </button>
-      </div>
+        {/* Profit Chart */}
 
-      {/* Profit Chart */}
-      <div
-        style={{
-          background: "white",
-          padding: "20px",
-          borderRadius: "12px",
-          marginBottom: "20px",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-        }}
-      >
-        <h2 style={{ color: "#2e7d32" }}>
-          📊 Profit Overview (₹)
-        </h2>
+        <div className="chart-card">
 
-        <Bar data={profitData} />
-      </div>
-
-      {/* Bottom Section */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "20px",
-        }}
-      >
-        {/* Pie Chart */}
-        <div
-          style={{
-            background: "white",
-            padding: "20px",
-            borderRadius: "12px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-          }}
-        >
-          <h2 style={{ color: "#2e7d32" }}>
-            🌱 Crop Statistics
+          <h2>
+            📊 Profit Overview (₹)
           </h2>
 
-          <p>
-            Distribution of recommended crops based on suitability.
-          </p>
+          <div className="bar-chart-container">
+  <Bar data={profitData} 
+  options={chartOptions} />
+</div>
 
-          <Pie data={cropData} />
         </div>
 
-        {/* Weather Chart */}
-        <div
-          style={{
-            background: "white",
-            padding: "20px",
-            borderRadius: "12px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-          }}
-        >
-          <h2 style={{ color: "#2e7d32" }}>
-            📈 Weather Trend (Temperature)
-          </h2>
+        {/* Bottom Charts */}
 
-          <p>
-            Temperature trend over the past 5 days.
-          </p>
+        <div className="analytics-grid">
 
-          <Line data={weatherData} />
+          <div className="chart-card">
+
+            <h2>
+              🌱 Crop Statistics
+            </h2>
+
+            <p>
+              Distribution of recommended crops.
+            </p>
+
+            <div className="pie-chart-container">
+  <Pie data={cropData} 
+  options={chartOptions} 
+  />
+</div>
+
+          </div>
+
+          <div className="chart-card">
+
+            <h2>
+              📈 Weather Trend
+            </h2>
+
+            <p>
+              Temperature trend over the past 5 days.
+            </p>
+
+            <div className="line-chart-container">
+  <Line data={weatherData} 
+  />
+</div>
+
+          </div>
+
         </div>
+
+        <div className="analytics-footer">
+
+          🌾 Smart Farmer Advisory System © 2026
+          <br />
+          Helping Farmers, Improving Future
+
+        </div>
+
       </div>
 
-      {/* Footer */}
-      <div
-        style={{
-          marginTop: "25px",
-          background: "#dff0df",
-          padding: "12px",
-          borderRadius: "8px",
-          textAlign: "center",
-        }}
-      >
-        🌾 Smart Farmer Advisory System © 2026 |
-        Helping Farmers, Improving Future
-      </div>
     </div>
   );
 }
 
 export default Analytics;
+

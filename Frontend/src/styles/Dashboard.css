@@ -1,0 +1,101 @@
+/* Dashboard Page Styles */
+.dashboard-page {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .dashboard-page {
+    padding: 1rem;
+  }
+}
+
+.dashboard-hero {
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.dashboard-hero h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin: 0 0 0.75rem;
+  font-weight: bold;
+}
+
+[data-theme="dark"] .dashboard-hero h1 {
+  color: #ecf0f1;
+}
+
+.dashboard-hero p {
+  font-size: 1.1rem;
+  color: #7f8c8d;
+  margin: 0;
+  line-height: 1.6;
+}
+
+[data-theme="dark"] .dashboard-hero p {
+  color: #bdc3c7;
+}
+
+/* Grid Layout */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  grid-auto-rows: auto;
+}
+
+/* Responsive Grid */
+@media (min-width: 1280px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 1023px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .dashboard-hero h1 {
+    font-size: 1.8rem;
+  }
+
+  .dashboard-hero p {
+    font-size: 1rem;
+  }
+}
+
+/* Mobile first responsive */
+@media (max-width: 480px) {
+  .dashboard-page {
+    padding: 0.75rem;
+  }
+
+  .dashboard-grid {
+    gap: 0.75rem;
+  }
+
+  .dashboard-hero h1 {
+    font-size: 1.5rem;
+  }
+
+  .dashboard-hero p {
+    font-size: 0.9rem;
+  }
+}

@@ -1,5 +1,8 @@
+
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import "../App.css";
 
 function Profile() {
   const [formData, setFormData] = useState({
@@ -13,6 +16,7 @@ function Profile() {
     soilType: "",
     preferredCrop: "",
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProfile();
@@ -66,78 +70,125 @@ function Profile() {
   };
 
   return (
-    <div style={{ padding: "30px" }}>
-      <h1>Farmer Profile</h1>
+    <div className="profile-page">
 
-      <form onSubmit={handleSubmit}>
-        <input
-          name="name"
-          placeholder="Name"
-          value={formData.name}
-          onChange={handleChange}
-        />
-        <br /><br />
+      <div className="profile-card">
 
-        <input
-          name="phone"
-          placeholder="Phone"
-          value={formData.phone}
-          onChange={handleChange}
-        />
-        <br /><br />
+  <div className="profile-header">
+    <button
+      className="back-btn"
+      onClick={() => navigate("/dashboard")}
+    >
+      ← Back
+    </button>
+  </div>
 
-        <input
-          name="village"
-          placeholder="Village"
-          value={formData.village}
-          onChange={handleChange}
-        />
-        <br /><br />
+        <h1 className="profile-title">
+          👨‍🌾 Farmer Profile
+        </h1>
 
-        <input
-          name="district"
-          placeholder="District"
-          value={formData.district}
-          onChange={handleChange}
-        />
-        <br /><br />
+        <p className="profile-subtitle">
+          Manage your farming information
+        </p>
 
-        <input
-          name="state"
-          placeholder="State"
-          value={formData.state}
-          onChange={handleChange}
-        />
-        <br /><br />
+        <form
+          className="profile-form"
+          onSubmit={handleSubmit}
+        >
 
-        <input
-          name="farmSize"
-          placeholder="Farm Size"
-          value={formData.farmSize}
-          onChange={handleChange}
-        />
-        <br /><br />
+          <div className="form-group">
+            <label>Name</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+            />
+          </div>
 
-        <input
-          name="soilType"
-          placeholder="Soil Type"
-          value={formData.soilType}
-          onChange={handleChange}
-        />
-        <br /><br />
+          <div className="form-group">
+            <label>Phone Number</label>
+            <input
+              type="text"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+            />
+          </div>
 
-        <input
-          name="preferredCrop"
-          placeholder="Preferred Crop"
-          value={formData.preferredCrop}
-          onChange={handleChange}
-        />
-        <br /><br />
+          <div className="form-group">
+            <label>Village</label>
+            <input
+              type="text"
+              name="village"
+              value={formData.village}
+              onChange={handleChange}
+            />
+          </div>
 
-        <button type="submit">
-          {formData._id ? "Update Profile" : "Save Profile"}
-        </button>
-      </form>
+          <div className="form-group">
+            <label>District</label>
+            <input
+              type="text"
+              name="district"
+              value={formData.district}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>State</label>
+            <input
+              type="text"
+              name="state"
+              value={formData.state}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Farm Size (Acres)</label>
+            <input
+              type="text"
+              name="farmSize"
+              value={formData.farmSize}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Soil Type</label>
+            <input
+              type="text"
+              name="soilType"
+              value={formData.soilType}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Preferred Crop</label>
+            <input
+              type="text"
+              name="preferredCrop"
+              value={formData.preferredCrop}
+              onChange={handleChange}
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="profile-btn"
+          >
+            {formData._id
+              ? "Update Profile"
+              : "Save Profile"}
+          </button>
+
+        </form>
+
+      </div>
+
     </div>
   );
 }

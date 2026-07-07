@@ -25,7 +25,10 @@
     "assistant": "AI സഹായി",
     "schemes": "സർക്കാർ സ്കീമുകൾ",
     "expenses": "ചെലവുകൾ",
-    "mandi": "മാണ്ടി വില"
+    "mandi": "മണ്ഡി വിലകൾ",
+    "logout": "ലോഗൗട്ട്",
+    "disease": "Disease Detection",
+    "expense": "Expenses"
   },
   "auth": {
     "login": "പ്രവേശിക്കുക",
@@ -76,7 +79,18 @@
     "yieldPrediction": "വിളവ് പ്രവചനം",
     "profitEstimation": "മുനാഫ ആകലനം",
     "mandiPrices": "മാണ്ടി വില",
-    "noData": "ഡാറ്റ ലഭ്യമല്ല"
+    "noData": "വിവരങ്ങൾ ലഭ്യമല്ല",
+    "title": "സ്മാർട്ട് കർഷകൻ ഡാഷ്‌ബോർഡ്",
+    "subtitle": "AI-പവർഡ് അഗ്രികൾച്ചറൽ പ്ലാറ്റ്ഫോം",
+    "mandi": "മണ്ഡി വിലകൾ",
+    "disease": "വിള രോഗം കണ്ടെത്തൽ",
+    "assistant": "AI കൃഷി സഹായി",
+    "analytics": "കൃഷി വിശകലനം",
+    "schemes": "സർക്കാർ പദ്ധതികൾ",
+    "expense": "ചെലവ് ട്രാക്കർ",
+    "pest": "Pest Alert",
+    "profit": "Profit Estimation",
+    "yield": "Yield Prediction"
   },
   "crop": {
     "title": "ഫസല് ശുപാരിശകൾ",
@@ -220,7 +234,11 @@
     "sunset": "സൂര്യാസ്തമയം",
     "rainProbability": "വർഷണത്തിന്റെ സാധ്യത",
     "uvIndex": "UV സൂചികാ",
-    "airQuality": "വായു നിലവാരം"
+    "airQuality": "വായു നിലവാരം",
+    "temperature": "താപനില",
+    "humidity": "ആർദ്രത",
+    "wind": "കാറ്റിന്റെ വേഗം",
+    "feelsLike": "അനുഭവപ്പെടുന്നത്"
   },
   "errors": {
     "networkError": "നെറ്റ്‌വർക്ക് പിശക്. പ്രയാസപ്പെടുന്നതായി വീണ്ടും ശ്രമിക്കുക.",

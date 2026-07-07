@@ -1,0 +1,170 @@
+{
+  "Potato___Early_blight": {
+    "disease_name": "Potato Early Blight",
+    "crop": "Potato",
+    "severity": "medium",
+    "symptoms": [
+      "Dark brown, concentric spots (target board effect) on older leaves.",
+      "Spots may merge, causing leaves to yellow, dry up, and drop off.",
+      "Sunken, brown, dry spots may also appear on the tubers."
+    ],
+    "causes": [
+      "Fungal pathogen Alternaria solani.",
+      "Favored by alternating wet and dry weather conditions.",
+      "Poor soil nutrition, plant stress, or aging foliage."
+    ],
+    "treatmentOrganic": [
+      "Apply organic copper-based fungicides or bio-fungicides.",
+      "Spray neem oil or compost tea to suppress fungal growth.",
+      "Prune and destroy infected lower leaves immediately to prevent upward spread."
+    ],
+    "treatmentChemical": [
+      "Apply contact fungicides containing Chlorothalonil, Mancozeb, or Propineb.",
+      "Use systemic fungicides like Azoxystrobin or Difenoconazole for severe infections."
+    ],
+    "prevention": [
+      "Use certified disease-free seeds.",
+      "Practice crop rotation (avoid nightshades like tomato/eggplant in the same soil).",
+      "Provide adequate spacing between plants to maximize air circulation.",
+      "Water at the base of the plants using drip irrigation to avoid leaf wetness."
+    ]
+  },
+  "Potato___Late_blight": {
+    "disease_name": "Potato Late Blight",
+    "crop": "Potato",
+    "severity": "high",
+    "symptoms": [
+      "Large, irregular water-soaked spots on leaves that rapidly turn brown/black.",
+      "A white, downy mold-like growth appears on the undersides of leaves in humid weather.",
+      "Rapid collapse and rotting of foliage; tubers develop a dark, dry rot."
+    ],
+    "causes": [
+      "Water-mold (Oomycete) pathogen Phytophthora infestans.",
+      "Cool (10-24°C), wet, and highly humid (>90%) weather.",
+      "Wind-borne spores traveling long distances from neighboring infected fields."
+    ],
+    "treatmentOrganic": [
+      "Spray copper fungicides preventatively before the disease spreads.",
+      "Remove and destroy infected plants completely (do not compost).",
+      "Apply bio-agents like Bacillus subtilis to enhance resistance."
+    ],
+    "treatmentChemical": [
+      "Apply systemic fungicides containing Metalaxyl, Cymoxanil, or Dimethomorph.",
+      "Spray immediately on receiving high-humidity weather warnings."
+    ],
+    "prevention": [
+      "Plant late blight-resistant potato cultivars.",
+      "Destroy volunteer potato plants and cull piles before the season starts.",
+      "Hill potatoes adequately to protect tubers from washing spores.",
+      "Harvest only when vines have been completely dead for 2 weeks."
+    ]
+  },
+  "Potato___healthy": {
+    "disease_name": "Potato Healthy",
+    "crop": "Potato",
+    "severity": "healthy",
+    "symptoms": [
+      "Leaves are vibrant green, flat, and free of spots or discoloration.",
+      "Stems are firm and upright.",
+      "Tubers are clean, firm, and developing normally."
+    ],
+    "causes": [
+      "Proper water and nutrient balance.",
+      "Effective disease management and healthy seed stock."
+    ],
+    "treatmentOrganic": [
+      "Continue organic feeding (compost, organic mulches).",
+      "No direct treatment required."
+    ],
+    "treatmentChemical": [
+      "No chemical application needed."
+    ],
+    "prevention": [
+      "Maintain good watering schedule.",
+      "Conduct regular checks for early signs of pests."
+    ]
+  },
+  "Tomato___Early_blight": {
+    "disease_name": "Tomato Early Blight",
+    "crop": "Tomato",
+    "severity": "medium",
+    "symptoms": [
+      "Dark spots with concentric rings (target pattern) on older leaves.",
+      "Leaves turn yellow and fall off, leading to sunscald on the fruit.",
+      "Sunken, leathery dark spots on the stem end of tomato fruit."
+    ],
+    "causes": [
+      "Fungal pathogen Alternaria solani.",
+      "High humidity, heavy dews, and warm temperatures.",
+      "Spores overwintering in soil, crop residue, or weeds."
+    ],
+    "treatmentOrganic": [
+      "Prune lower leaves to prevent splash-up from the soil.",
+      "Apply organic copper-based sprays or biofungicides.",
+      "Mulch around the base of the tomato plants immediately after planting."
+    ],
+    "treatmentChemical": [
+      "Apply preventative contact fungicides like Chlorothalonil or Mancozeb.",
+      "Spray systemic fungicides if the disease progresses rapidly."
+    ],
+    "prevention": [
+      "Ensure a 3-year crop rotation schedule.",
+      "Provide strong support stakes or cages to keep leaves off the wet ground.",
+      "Water only in the morning at the root zone (drip irrigation preferred).",
+      "Prune the bottom 12 inches of leaves as the plant grows."
+    ]
+  },
+  "Tomato___Late_blight": {
+    "disease_name": "Tomato Late Blight",
+    "crop": "Tomato",
+    "severity": "high",
+    "symptoms": [
+      "Large water-soaked spots on leaves that quickly expand and turn brown.",
+      "White fuzzy growth on the undersides of leaves during high humidity.",
+      "Large, firm, greasy-looking brown patches on tomato fruits."
+    ],
+    "causes": [
+      "Water-mold pathogen Phytophthora infestans.",
+      "Consistently cool, wet, and humid conditions.",
+      "Overhead watering or closely crowded tomato plants."
+    ],
+    "treatmentOrganic": [
+      "Remove and discard infected plant tissue immediately.",
+      "Apply copper fungicides as a preventative spray at first warning.",
+      "Use bio-control agents containing Bacillus subtilis."
+    ],
+    "treatmentChemical": [
+      "Apply systemic and contact fungicides (e.g., Mefenoxam, Chlorothalonil).",
+      "Apply treatments every 5-7 days under wet weather patterns."
+    ],
+    "prevention": [
+      "Grow resistant tomato varieties.",
+      "Avoid overhead watering and water late in the day.",
+      "Allow wide spacing between plants to speed up drying of foliage.",
+      "Avoid planting tomatoes near potatoes."
+    ]
+  },
+  "Tomato___healthy": {
+    "disease_name": "Tomato Healthy",
+    "crop": "Tomato",
+    "severity": "healthy",
+    "symptoms": [
+      "Lush green leaves, robust yellow blossoms, and clean, firm fruit.",
+      "No leaf spots, curling, or dark patches on fruits."
+    ],
+    "causes": [
+      "Optimized growing conditions and excellent plant hygiene."
+    ],
+    "treatmentOrganic": [
+      "Apply liquid organic fertilizer or seaweed extract for growth support.",
+      "No treatments required."
+    ],
+    "treatmentChemical": [
+      "No chemical application needed."
+    ],
+    "prevention": [
+      "Maintain crop cage hygiene and regular weed clearance.",
+      "Inspect leaves weekly."
+    ]
+  }
+}

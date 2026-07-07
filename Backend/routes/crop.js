@@ -1,6 +1,7 @@
 const express = require("express");
 const axios = require("axios");
 const Profile = require("../models/Profile");
+const authMiddleware = require("../middleware/authMiddleware");
 const {
   generateAIResponse,
 } = require("../utils/aiClient");
@@ -21,7 +22,7 @@ const router = express.Router();
  * Get crop recommendations based on farmer profile
  * Query params: language (optional, default: en)
  */
-router.get("/", async (req, res, next) => {
+router.get("/", authMiddleware, async (req, res, next) => {
   try {
     const { language = "en" } = req.query;
 
@@ -33,7 +34,7 @@ router.get("/", async (req, res, next) => {
     }
 
     // Create cache key
-    const cacheKey = `crop_recommendations_${language}`;
+    const cacheKey = `crop_recommendations_${req.user.id}_${language}`;
 
     // Check cache first (1 hour TTL)
     if (cacheManager.has(cacheKey)) {
@@ -48,8 +49,8 @@ router.get("/", async (req, res, next) => {
       );
     }
 
-    // Fetch latest profile
-    const profile = await Profile.findOne().sort({ _id: -1 });
+    // Fetch user profile
+    const profile = await Profile.findOne({ userId: req.user.id });
 
     if (!profile) {
       logger.warn("No profile found for crop recommendation");
@@ -178,6 +179,9 @@ Respond ONLY in ${language} language.`;
 
 try {
   aiData = JSON.parse(responseText);
+  if (aiData.success === false || !aiData.recommendations || !Array.isArray(aiData.recommendations)) {
+    throw new Error("Invalid AI response");
+  }
 } catch (e) {
   aiData = {
     recommendations: [
@@ -202,11 +206,6 @@ try {
     ],
   };
 }
-
-    // Validate AI response
-    if (!aiData.recommendations || !Array.isArray(aiData.recommendations)) {
-      throw new Error("Invalid AI response format");
-    }
 
     // Cache the recommendations (1 hour TTL)
     cacheManager.set(cacheKey, aiData, 3600000);
@@ -235,7 +234,7 @@ try {
  * POST /crop/recommendation
  * Get detailed recommendation for a specific crop
  */
-router.post("/recommendation", async (req, res, next) => {
+router.post("/recommendation", authMiddleware, async (req, res, next) => {
   try {
     const { crop, language = "en" } = req.body;
 
@@ -253,7 +252,7 @@ router.post("/recommendation", async (req, res, next) => {
     }
 
     // Create cache key
-    const cacheKey = `crop_detail_${crop}_${language}`;
+    const cacheKey = `crop_detail_${req.user.id}_${crop}_${language}`;
 
     // Check cache
     if (cacheManager.has(cacheKey)) {
@@ -268,7 +267,7 @@ router.post("/recommendation", async (req, res, next) => {
     }
 
     // Get profile for context
-    const profile = await Profile.findOne().sort({ _id: -1 });
+    const profile = await Profile.findOne({ userId: req.user.id });
 
     const detailedPrompt = `You are an expert agricultural advisor.
 
@@ -310,9 +309,28 @@ Respond ONLY in ${language} language.`;
 );
 
 
-    responseText = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
-    
-    const cropDetails = JSON.parse(responseText);
+    let cropDetails;
+    try {
+      responseText = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
+      cropDetails = JSON.parse(responseText);
+      if (cropDetails.success === false || (!cropDetails.crop && !cropDetails.name)) {
+        throw new Error("Invalid response");
+      }
+    } catch (e) {
+      cropDetails = {
+        crop: crop,
+        season: "Kharif",
+        soil_requirements: profile?.soilType || "Alluvial Soil",
+        water_requirements: "Moderate",
+        temperature_range: "20-30°C",
+        yield: 2000,
+        days_to_harvest: 120,
+        nutrients: "Nitrogen: 120kg/ha, Phosphorus: 60kg/ha",
+        pests_diseases: "Blast, Leaf Folder",
+        market_value: "Moderate",
+        tips: "Ensure proper weed control and moisture."
+      };
+    }
 
     // Cache for 1 hour
     cacheManager.set(cacheKey, cropDetails, 3600000);

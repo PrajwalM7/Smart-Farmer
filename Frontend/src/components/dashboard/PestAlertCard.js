@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useLanguage } from "../../context/LanguageContext";
 import { motion } from "framer-motion";
@@ -6,33 +6,42 @@ import { FiAlertCircle } from "react-icons/fi";
 import LoadingSpinner from "../LoadingSpinner";
 import "../../styles/DashboardCards.css";
 
-const PestAlertCard = () => {
+const PestAlertCard = ({ refreshKey = 0 }) => {
   const { t, language } = useLanguage();
   const [alert, setAlert] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchAlert();
-  }, [language]);
-
-  const fetchAlert = async () => {
+  const fetchAlert = useCallback(async () => {
     try {
       setLoading(true);
-      // Default conditions if not available from profile
+      const token = localStorage.getItem("token");
       const response = await axios.get(
-        `http://localhost:5000/pest?temperature=28&humidity=75&language=${language}`
+        `http://localhost:5000/pest?temperature=28&humidity=75&language=${language}`,
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      setAlert(response.data.alert);
+      
+      if (response.data && response.data.success === false) {
+        // Fallback UI when AI service is unavailable
+        setError("AI service temporarily unavailable. Please try again later.");
+        setAlert(null);
+        return;
+      }
+      
+      setAlert(response.data.alert || null);
       setError(null);
     } catch (err) {
       console.error("Pest fetch error:", err);
-      setError("Unable to fetch pest alerts");
+      setError(err.response?.data?.message || err.message || "Unable to fetch pest alerts");
       setAlert(null);
     } finally {
       setLoading(false);
     }
-  };
+  }, [language]);
+
+  useEffect(() => {
+    fetchAlert();
+  }, [fetchAlert, refreshKey]);
 
   const getSeverityColor = (level) => {
     switch (level?.toLowerCase()) {

@@ -25,7 +25,10 @@
     "assistant": "AI உதவி",
     "schemes": "அரசாங்க திட்டங்கள்",
     "expenses": "செலவுகள்",
-    "mandi": "மண்டி விலைகள்"
+    "mandi": "மண்டி விலைகள்",
+    "logout": "வெளியேறு",
+    "disease": "Disease Detection",
+    "expense": "Expenses"
   },
   "auth": {
     "login": "உள்நுழைக",
@@ -76,7 +79,18 @@
     "yieldPrediction": "மகசூல் முன்னறிவிப்பு",
     "profitEstimation": "லாபம் மதிப்பீடு",
     "mandiPrices": "மண்டி விலைகள்",
-    "noData": "தரவு கிடைக்கவில்லை"
+    "noData": "தரவு எதுவும் இல்லை",
+    "title": "ஸ்மார்ட் விவசாயி டாஷ்போர்டு",
+    "subtitle": "AI-இயங்கும் விவசாய தளம்",
+    "mandi": "மண்டி விலைகள்",
+    "disease": "பயிர் நோய் கண்டறிதல்",
+    "assistant": "AI விவசாய உதவியாளர்",
+    "analytics": "விவசாய பகுப்பாய்வு",
+    "schemes": "அரசு திட்டங்கள்",
+    "expense": "செலவு கண்காணிப்பு",
+    "pest": "Pest Alert",
+    "profit": "Profit Estimation",
+    "yield": "Yield Prediction"
   },
   "crop": {
     "title": "பயிர் பரிந்துரைகள்",
@@ -220,7 +234,11 @@
     "sunset": "சூரியாஸ்தம்",
     "rainProbability": "மழை நிகழ்தகவு",
     "uvIndex": "UV குறியீடு",
-    "airQuality": "காற்றுத் தரம்"
+    "airQuality": "காற்றுத் தரம்",
+    "temperature": "வெப்பநிலை",
+    "humidity": "ஈரப்பதம்",
+    "wind": "காற்றின் வேகம்",
+    "feelsLike": "உணர்வு வெப்பநிலை"
   },
   "errors": {
     "networkError": "பிணைய பிழை. மீண்டும் முயற்சிக்கவும்.",

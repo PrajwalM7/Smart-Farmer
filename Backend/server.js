@@ -8,9 +8,12 @@ connectDB();
 
 const app = express();
 
+const path = require("path");
+
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Routes
 const weatherRoutes = require("./routes/weather");
@@ -31,48 +34,32 @@ const yieldRoutes =
   require("./routes/yield");
 const diseaseRoutes = require("./routes/disease");
 
-app.use("/api/disease", diseaseRoutes);
 const assistantRoutes =
   require("./routes/assistant");
 
 // Error Handler
 const { errorMiddleware } = require("./utils/errorHandler");
 
-// Route Setup
-app.use("/weather", weatherRoutes);
-app.use("/mandi", mandiRoute);
-app.use("/auth", authRoute);
-app.use("/crop", cropRoutes);
-app.use("/fertilizer", fertilizerRoutes);
-app.use("/api/fertilizer", fertilizerRoutes);
-app.use("/profit", profitRoutes);
-app.use("/profile", profileRoutes);
-app.use("/irrigation", irrigationRoutes);
-app.use(
-  "/expense",
-  expenseRoutes
-);
-app.use(
-  "/report",
-  reportRoutes
-);
-app.use(
-  "/pest",
-  pestRoutes
-);
-app.use(
-  "/yield",
-  yieldRoutes
-);
-app.use(
-  "/disease",
-  diseaseRoutes
-);
-app.use(
-  "/assistant",
-  assistantRoutes
-);
+// Route Setup — mounted under both /api and root for frontend compatibility
+const mountRoutes = (prefix, router) => {
+  app.use(`/api/${prefix}`, router);
+  app.use(`/${prefix}`, router);
+};
 
+mountRoutes("weather", weatherRoutes);
+mountRoutes("mandi", mandiRoute);
+mountRoutes("auth", authRoute);
+mountRoutes("crop", cropRoutes);
+mountRoutes("fertilizer", fertilizerRoutes);
+mountRoutes("profit", profitRoutes);
+mountRoutes("profile", profileRoutes);
+mountRoutes("irrigation", irrigationRoutes);
+mountRoutes("expense", expenseRoutes);
+mountRoutes("report", reportRoutes);
+mountRoutes("pest", pestRoutes);
+mountRoutes("yield", yieldRoutes);
+mountRoutes("assistant", assistantRoutes);
+mountRoutes("disease", diseaseRoutes);
 
 // Test Route
 app.get("/", (req, res) => {

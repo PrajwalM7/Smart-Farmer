@@ -47,9 +47,13 @@ const validator = {
     return supportedLanguages.includes(language);
   },
 
-  // Soil type validation
+  // Soil type validation — must match Profile model enum exactly
   isValidSoilType: (soilType) => {
-    const validTypes = ['Black Soil', 'Red Soil', 'Laterite Soil', 'Alluvial Soil', 'Clay Soil', 'Sandy Soil'];
+    const validTypes = [
+      'Black Soil', 'Black Cotton Soil', 'Red Soil', 'Laterite Soil',
+      'Alluvial Soil', 'Clay Soil', 'Sandy Soil', 'Loamy Soil',
+      'Mountain Soil', 'Other'
+    ];
     return validTypes.includes(soilType);
   },
 

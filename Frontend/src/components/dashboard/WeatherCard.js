@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useLanguage } from "../../context/LanguageContext";
 import { motion } from "framer-motion";
@@ -6,26 +6,27 @@ import { FiCloud, FiDroplet, FiWind } from "react-icons/fi";
 import LoadingSpinner from "../LoadingSpinner";
 import "../../styles/DashboardCards.css";
 
-const WeatherCard = () => {
+const WeatherCard = ({ refreshKey = 0 }) => {
   const { t } = useLanguage();
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchWeather();
-  }, []);
-
-  const fetchWeather = async () => {
+  const fetchWeather = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await axios.get(
-  "http://localhost:5000/weather"
-);
-
-console.log("Weather API:", response.data);
-
-setWeather(response.data);
+      const token = localStorage.getItem("token");
+      const response = await axios.get("http://localhost:5000/api/weather", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      // Fallback UI when AI service is unavailable
+      if (response.data && response.data.success === false) {
+        setError(response.data.message || "AI service temporarily unavailable.");
+        setWeather(null);
+        return;
+      }
+      // Backend wraps response in { success: true, data: {...} }
+      setWeather(response.data?.data || response.data);
       setError(null);
     } catch (err) {
       console.error("Weather fetch error:", err);
@@ -34,7 +35,13 @@ setWeather(response.data);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchWeather();
+  }, [fetchWeather, refreshKey]);
+
+
 
   return (
     <motion.div
@@ -60,29 +67,56 @@ setWeather(response.data);
         </div>
       ) : weather ? (
         <div className="weather-content">
+          <div className="weather-location" style={{ fontSize: "0.95rem", color: "var(--text-secondary)", fontWeight: "500", marginTop: "-0.5rem" }}>
+            📍 {weather.district || "N/A"}, {weather.state || "N/A"}
+          </div>
+
           <div className="weather-main">
             <div className="temperature">
-              <span className="value">{weather.temperature || "--"}°C</span>
+              <span className="value">{weather.temperature !== undefined ? `${weather.temperature}°C` : "--"}</span>
               <span className="label">{t("weather.temperature") || "Temperature"}</span>
             </div>
-            <div className="condition">
-              <p>{weather.condition || "Moderate"}</p>
+            <div className="condition" style={{ flex: 1, paddingLeft: "1rem" }}>
+              <p style={{ margin: 0, fontWeight: "600", color: "var(--primary-color)" }}>
+                {weather.advisory || "Weather is suitable for farming."}
+              </p>
             </div>
           </div>
 
-          <div className="weather-details">
+          <div className="weather-details" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))" }}>
+            <div className="detail">
+              <div style={{ fontSize: "1.2rem", marginRight: "0.25rem" }}>🌡️</div>
+              <div>
+                <span className="label">{t("weather.feelsLike") || "Feels Like"}</span>
+                <span className="value">{weather.feelsLike !== undefined ? `${weather.feelsLike}°C` : "--"}</span>
+              </div>
+            </div>
             <div className="detail">
               <FiDroplet size={18} />
               <div>
                 <span className="label">{t("weather.humidity") || "Humidity"}</span>
-                <span className="value">{weather.humidity || "--"}%</span>
+                <span className="value">{weather.humidity !== undefined ? `${weather.humidity}%` : "--"}</span>
               </div>
             </div>
             <div className="detail">
               <FiWind size={18} />
               <div>
                 <span className="label">{t("weather.wind") || "Wind"}</span>
-                <span className="value">{weather.windSpeed || "--"} km/h</span>
+                <span className="value">{weather.windSpeed !== undefined ? `${weather.windSpeed} km/h` : "--"}</span>
+              </div>
+            </div>
+            <div className="detail">
+              <div style={{ fontSize: "1.2rem", marginRight: "0.25rem" }}>🌅</div>
+              <div>
+                <span className="label">Sunrise</span>
+                <span className="value">{weather.sunrise || "--:--"}</span>
+              </div>
+            </div>
+            <div className="detail">
+              <div style={{ fontSize: "1.2rem", marginRight: "0.25rem" }}>🌇</div>
+              <div>
+                <span className="label">Sunset</span>
+                <span className="value">{weather.sunset || "--:--"}</span>
               </div>
             </div>
           </div>

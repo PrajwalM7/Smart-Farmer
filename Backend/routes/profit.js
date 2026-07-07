@@ -1,6 +1,7 @@
 const express = require("express");
 const axios = require("axios");
 const { generateAIResponse } = require("../utils/aiClient");
+const authMiddleware = require("../middleware/authMiddleware");
 
 // Import utilities
 const cacheManager = require("../utils/cacheManager");
@@ -8,6 +9,7 @@ const validator = require("../utils/validator");
 const responseFormatter = require("../utils/responseFormatter");
 const logger = require("../utils/logger");
 const translations = require("../utils/translations");
+const { DEFAULT_TTL } = require("../config/cacheConfig");
 
 const router = express.Router();
 const Profile = require("../models/Profile");
@@ -58,7 +60,7 @@ async function getLiveMandiPrice(crop, district, state) {
  * Calculate profit estimation with AI analysis
  * Query params: language (optional)
  */
-router.get("/", async (req, res, next) => {
+router.get("/", authMiddleware, async (req, res, next) => {
   try {
     const { language = "en" } = req.query;
 
@@ -69,7 +71,7 @@ router.get("/", async (req, res, next) => {
       );
     }
 
-    const profile = await Profile.findOne().sort({ _id: -1 });
+    const profile = await Profile.findOne({ userId: req.user.id });
 
     if (!profile) {
       logger.warn("No profile found for profit calculation");
@@ -86,6 +88,17 @@ router.get("/", async (req, res, next) => {
     }
 
     // Try to get live mandi prices (no caching as prices change frequently)
+  const profitCacheKey = `profit_${req.user.id}_${language}_${profile.preferredCrop}_${profile.farmSize}`;
+  const cachedProfit = cacheManager.get(profitCacheKey);
+  if (cachedProfit) {
+    logger.info("Profit cache hit", { profitCacheKey });
+    return res.json(
+      responseFormatter.success(
+        cachedProfit,
+        translations.getTranslation(language, "profit.calculation_complete")
+      )
+    );
+  }
     let mandiData = null;
     try {
       mandiData = await getLiveMandiPrice(
@@ -181,15 +194,18 @@ Respond ONLY in ${language} language.`;
 
 try {
   profitData = JSON.parse(responseText);
+  if (profitData.success === false || !profitData.total_investment) {
+    throw new Error("Invalid response");
+  }
 } catch (err) {
   console.error("Profit JSON Parse Error:", responseText);
 
   profitData = {
-    crop: profile.preferredCrop,
-    farm_size: profile.farmSize,
-    soil_type: profile.soilType,
+    crop: profile?.preferredCrop || "Rice",
+    farm_size: profile?.farmSize || 5,
+    soil_type: profile?.soilType || "Black Soil",
     expected_yield_kg_per_acre: 3000,
-    total_expected_yield: profile.farmSize * 3000,
+    total_expected_yield: (profile?.farmSize || 5) * 3000,
     market_price_per_kg: 25,
     investment_breakdown: {
       seeds: 5000,
@@ -219,6 +235,8 @@ try {
   };
 }
 
+    // Store profit data in cache
+    cacheManager.set(profitCacheKey, profitData, { ttl: DEFAULT_TTL });
     logger.info("Profit calculation generated", {
       profile: profile._id,
       language,
@@ -243,7 +261,7 @@ try {
  * POST /profit/compare
  * Compare profitability of different crops
  */
-router.post("/compare", async (req, res, next) => {
+router.post("/compare", authMiddleware, async (req, res, next) => {
   try {
     const { crops = [], language = "en" } = req.body;
 
@@ -260,7 +278,7 @@ router.post("/compare", async (req, res, next) => {
       );
     }
 
-    const profile = await Profile.findOne().sort({ _id: -1 });
+    const profile = await Profile.findOne({ userId: req.user.id });
 
     if (!profile) {
       return res.status(404).json(
@@ -299,12 +317,15 @@ Respond ONLY in ${language} language.`;
 
 try {
   comparison = JSON.parse(responseText);
+  if (comparison.success === false || (!comparison.recommendation && !comparison.rankings)) {
+    throw new Error("Invalid response");
+  }
 } catch (err) {
   console.error("Comparison Parse Error:", responseText);
 
   comparison = {
-    recommendation: crops[0],
-    rankings: crops
+    recommendation: crops[0] || "Rice",
+    rankings: crops.length > 0 ? crops : ["Rice", "Maize"]
   };
 }
 

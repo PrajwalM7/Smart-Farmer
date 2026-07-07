@@ -1,6 +1,7 @@
 const express = require("express");
 const axios = require("axios");
 const { generateAIResponse } = require("../utils/aiClient");
+const authMiddleware = require("../middleware/authMiddleware");
 
 // Import utilities
 const cacheManager = require("../utils/cacheManager");
@@ -19,7 +20,7 @@ const Profile = require("../models/Profile");
  * Predict yield based on profile and current conditions
  * Query params: language (optional, default: en)
  */
-router.get("/", async (req, res, next) => {
+router.get("/", authMiddleware, async (req, res, next) => {
   try {
     const { language = "en" } = req.query;
 
@@ -31,7 +32,7 @@ router.get("/", async (req, res, next) => {
     }
 
     // No caching for yield predictions (real-time based on weather)
-    const profile = await Profile.findOne().sort({ _id: -1 });
+    const profile = await Profile.findOne({ userId: req.user.id });
 
     if (!profile) {
       logger.warn("No profile found for yield prediction");
@@ -130,14 +131,17 @@ Respond ONLY in ${language} language.`;
 
 try {
   yieldData = JSON.parse(responseText);
+  if (yieldData.success === false || !yieldData.expected_yield_per_acre) {
+    throw new Error("Invalid response");
+  }
 } catch (err) {
   console.error("Yield JSON Parse Error:", responseText);
 
   yieldData = {
-    crop: profile.preferredCrop,
-    farm_size: profile.farmSize,
+    crop: profile?.preferredCrop || "Rice",
+    farm_size: profile?.farmSize || 5,
     expected_yield_per_acre: 25,
-    total_expected_yield_quintals: profile.farmSize * 25,
+    total_expected_yield_quintals: (profile?.farmSize || 5) * 25,
     confidence_score: 75,
     confidence_level: "Medium",
     yield_analysis: {
@@ -185,7 +189,7 @@ try {
  * POST /yield/factors
  * Analyze specific factors affecting yield
  */
-router.post("/factors", async (req, res, next) => {
+router.post("/factors", authMiddleware, async (req, res, next) => {
   try {
     const { 
       temperature_avg, 
@@ -213,7 +217,7 @@ router.post("/factors", async (req, res, next) => {
       );
     }
 
-    const profile = await Profile.findOne().sort({ _id: -1 });
+    const profile = await Profile.findOne({ userId: req.user.id });
 
     if (!profile) {
       return res.status(404).json(
@@ -247,6 +251,9 @@ Respond ONLY in ${language} language.`;
 
 try {
   analysis = JSON.parse(responseText);
+  if (analysis.success === false || !analysis.impact) {
+    throw new Error("Invalid response");
+  }
 } catch (err) {
   console.error("Yield Factors Parse Error:", responseText);
 

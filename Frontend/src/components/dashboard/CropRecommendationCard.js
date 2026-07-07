@@ -1,37 +1,70 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../context/LanguageContext";
 import { motion } from "framer-motion";
 import { MdAgriculture } from "react-icons/md";
+import { FiUser, FiArrowRight } from "react-icons/fi";
 import LoadingSpinner from "../LoadingSpinner";
 import "../../styles/DashboardCards.css";
 
-const CropRecommendationCard = () => {
+const ProfilePrompt = ({ message }) => {
+  const navigate = useNavigate();
+  return (
+    <div className="card-profile-prompt">
+      <span className="prompt-icon">🌱</span>
+      <p>{message || "Complete your profile to get personalized AI recommendations."}</p>
+      <button className="prompt-btn" onClick={() => navigate("/profile")}>
+        <FiUser size={14} /> Set Up Profile <FiArrowRight size={14} />
+      </button>
+    </div>
+  );
+};
+
+const CropRecommendationCard = ({ refreshKey = 0 }) => {
   const { t, language } = useLanguage();
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [noProfile, setNoProfile] = useState(false);
 
-  useEffect(() => {
-    fetchRecommendations();
-  }, [language]);
-
-  const fetchRecommendations = async () => {
+  const fetchRecommendations = useCallback(async () => {
     try {
       setLoading(true);
+      setNoProfile(false);
+      const token = localStorage.getItem("token");
       const response = await axios.get(
-        `http://localhost:5000/crop?language=${language}`
+        `http://localhost:5000/crop?language=${language}`,
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      setRecommendations(response.data.recommendations || []);
+      // Check if AI service indicated failure
+      if (response.data && response.data.success === false) {
+        // Fallback UI message for unavailable AI service
+        setError("AI service temporarily unavailable. Please try again later.");
+        setRecommendations([]);
+        return;
+      }
+      const recs = response.data.recommendations || [];
+      setRecommendations(recs);
       setError(null);
     } catch (err) {
       console.error("Crop fetch error:", err);
-      setError("Unable to fetch recommendations");
+      const status = err?.response?.status;
+      if (status === 401 || status === 404) {
+        setRecommendations([]);
+        setError(null);
+      } else {
+        setError("Unable to fetch recommendations");
+      }
       setRecommendations([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, [language]);
+
+  useEffect(() => {
+    fetchRecommendations();
+  }, [fetchRecommendations, refreshKey]);
 
   return (
     <motion.div
@@ -81,8 +114,10 @@ const CropRecommendationCard = () => {
             </motion.div>
           ))}
         </div>
+      ) : noProfile ? (
+        <ProfilePrompt message="Set up your farm profile (location, soil type) to get AI-powered crop recommendations." />
       ) : (
-        <p className="no-data">{t("dashboard.noData") || "No recommendations"}</p>
+        <ProfilePrompt message="Complete your profile to get personalized crop recommendations." />
       )}
     </motion.div>
   );

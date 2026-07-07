@@ -99,10 +99,6 @@ const AppContent = () => {
               />
 
               <Route
-                path="/disease-detection"
-                element={<DiseaseDetection />}
-              />
-              <Route
                 path="/disease"
                 element={<DiseaseDetection />}
               />

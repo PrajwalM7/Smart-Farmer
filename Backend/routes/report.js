@@ -3,15 +3,13 @@ const PDFDocument = require("pdfkit");
 
 const Profile = require("../models/Profile");
 
+const authMiddleware = require("../middleware/authMiddleware");
+
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.get("/", authMiddleware, async (req, res) => {
   try {
-
-    const profile =
-      await Profile.findOne().sort({
-        _id: -1,
-      });
+    const profile = await Profile.findOne({ userId: req.user.id });
 
     const doc =
       new PDFDocument();

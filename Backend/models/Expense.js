@@ -13,6 +13,13 @@ const expenseSchema = new mongoose.Schema({
     required: true
   },
 
+  type: {
+    type: String,
+    enum: ["Expense", "Income"],
+    default: "Expense",
+    required: true
+  },
+
   category: {
     type: String,
     enum: [
@@ -81,14 +88,13 @@ expenseSchema.index({ year: 1, month: 1 });
 expenseSchema.index({ category: 1 });
 
 // Update the updatedAt timestamp before saving
-expenseSchema.pre('save', function(next) {
+expenseSchema.pre('save', function() {
   this.updatedAt = Date.now();
   // Extract month and year from date if not provided
   if (!this.month || !this.year) {
     this.month = this.date.getMonth() + 1;
     this.year = this.date.getFullYear();
   }
-  next();
 });
 
 module.exports = mongoose.model("Expense", expenseSchema);

@@ -25,7 +25,10 @@
     "assistant": "AI సహాయకుడు",
     "schemes": "ప్రభుత్వ పథకాలు",
     "expenses": "ఖర్చులు",
-    "mandi": "మండి ధరలు"
+    "mandi": "మండి ధరలు",
+    "logout": "లాగ్ అవుట్",
+    "disease": "Disease Detection",
+    "expense": "Expenses"
   },
   "auth": {
     "login": "ప్రవేశించండి",
@@ -76,7 +79,18 @@
     "yieldPrediction": "పంట సూచన",
     "profitEstimation": "లాభ అంచనా",
     "mandiPrices": "మండి ధరలు",
-    "noData": "డేటా లేనిది"
+    "noData": "డేటా అందుబాటులో లేదు",
+    "title": "స్మార్ట్ రైతు డాష్‌బోర్డ్",
+    "subtitle": "AI-ఆధారిత వ్యవసాయ వేదిక",
+    "mandi": "మండి ధరలు",
+    "disease": "పంట తెగులు గుర్తింపు",
+    "assistant": "AI వ్యవసాయ సహాయకుడు",
+    "analytics": "వ్యవసాయ విశ్లేషణ",
+    "schemes": "ప్రభుత్వ పథకాలు",
+    "expense": "ఖర్చుల ట్రాకర్",
+    "pest": "Pest Alert",
+    "profit": "Profit Estimation",
+    "yield": "Yield Prediction"
   },
   "crop": {
     "title": "పంటల సిఫారిశ్లు",
@@ -220,7 +234,11 @@
     "sunset": "సూర్యాస్తమయం",
     "rainProbability": "వర్షపాతం సంభావ్యత",
     "uvIndex": "UV సూచిక",
-    "airQuality": "గాలి నాణ్యత"
+    "airQuality": "గాలి నాణ్యత",
+    "temperature": "ఉష్ణోగ్రత",
+    "humidity": "తేమ",
+    "wind": "గాలి వేగం",
+    "feelsLike": "అనిపిస్తోంది"
   },
   "errors": {
     "networkError": "నెట్‌వర్క్ లోపం. దయచేసి ప్రయత్నించండి.",

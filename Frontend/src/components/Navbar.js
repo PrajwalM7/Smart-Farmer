@@ -1,26 +1,25 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
-import LanguageSelector from "./LanguageSelector";
+
 import { motion } from "framer-motion";
 import {
-  FiMenu,
-  FiX,
-  FiLogOut,
-  FiUser,
-  FiChevronDown,
-  FiMoon,
-  FiSun,
-} from "react-icons/fi";
-import {
-  MdDashboard,
-  MdPerson,
-  MdAnalytics,
-  MdAttachMoney,
-  MdLeakAdd,
-  MdChatBubble,
-  MdSchool,
-} from "react-icons/md";
+  Menu,
+  X,
+  LogOut,
+  User,
+  ChevronDown,
+  Moon,
+  Sun,
+  Settings,
+  LayoutDashboard,
+  Activity,
+  CircleDollarSign,
+  ScanHeart,
+  Bot,
+  Landmark,
+  Leaf
+} from "lucide-react";
 import "../styles/Navbar.css";
 
 const Navbar = ({ darkMode, setDarkMode }) => {
@@ -31,28 +30,27 @@ const Navbar = ({ darkMode, setDarkMode }) => {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
   const navItems = [
-    { path: "/dashboard", label: t("navbar.dashboard"), icon: MdDashboard },
-    { path: "/profile", label: t("navbar.profile"), icon: MdPerson },
-    { path: "/analytics", label: t("navbar.analytics"), icon: MdAnalytics },
+    { path: "/dashboard", label: t("navbar.dashboard"), icon: LayoutDashboard },
+    { path: "/analytics", label: t("navbar.analytics"), icon: Activity },
     {
       path: "/expense-tracker",
       label: t("navbar.expense"),
-      icon: MdAttachMoney,
+      icon: CircleDollarSign,
     },
     {
-      path: "/disease-detection",
+      path: "/disease",
       label: t("navbar.disease"),
-      icon: MdLeakAdd,
+      icon: ScanHeart,
     },
     {
       path: "/assistant",
       label: t("navbar.assistant"),
-      icon: MdChatBubble,
+      icon: Bot,
     },
     {
       path: "/government-schemes",
       label: t("navbar.schemes"),
-      icon: MdSchool,
+      icon: Landmark,
     },
   ];
 
@@ -100,7 +98,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
           whileHover={{ scale: 1.05 }}
           onClick={() => navigate("/dashboard")}
         >
-          <span className="logo-icon">🌾</span>
+          <Leaf className="logo-icon" size={24} color="#F5F7FA" />
           <span className="logo-text">Smart Farmer</span>
         </motion.div>
 
@@ -131,11 +129,11 @@ const Navbar = ({ darkMode, setDarkMode }) => {
               whileTap={{ scale: 0.9 }}
               title={darkMode ? "Light Mode" : "Dark Mode"}
             >
-              {darkMode ? <FiSun size={20} /> : <FiMoon size={20} />}
+              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
             </motion.button>
 
             {/* Language Selector */}
-            <LanguageSelector />
+            
 
             {/* User Dropdown */}
             <div className="user-dropdown">
@@ -144,11 +142,11 @@ const Navbar = ({ darkMode, setDarkMode }) => {
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
                 whileHover={{ scale: 1.05 }}
               >
-                <FiUser size={20} />
+                <User size={20} />
                 <span>{t("navbar.profile")}</span>
-                <FiChevronDown
+                <ChevronDown
                   size={16}
-                  className={userDropdownOpen ? "rotate" : ""}
+                  className={`chevron ${userDropdownOpen ? "rotate" : ""}`}
                 />
               </motion.button>
 
@@ -166,15 +164,25 @@ const Navbar = ({ darkMode, setDarkMode }) => {
                       setUserDropdownOpen(false);
                     }}
                   >
-                    <FiUser size={16} />
+                    <User size={16} />
                     {t("navbar.profile")}
+                  </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => {
+                      navigate("/profile"); // Navigate to profile where settings are located
+                      setUserDropdownOpen(false);
+                    }}
+                  >
+                    <Settings size={16} />
+                    {t("common.settings")}
                   </button>
                   <div className="dropdown-divider" />
                   <button
                     className="dropdown-item logout"
                     onClick={handleLogout}
                   >
-                    <FiLogOut size={16} />
+                    <LogOut size={16} />
                     {t("navbar.logout")}
                   </button>
                 </motion.div>
@@ -191,7 +199,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
           >
-            {darkMode ? <FiSun size={20} /> : <FiMoon size={20} />}
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </motion.button>
 
           <motion.button
@@ -200,7 +208,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
           >
-            {mobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </motion.button>
         </div>
       </div>
@@ -234,13 +242,13 @@ const Navbar = ({ darkMode, setDarkMode }) => {
           </div>
 
           <div className="mobile-menu-bottom">
-            <LanguageSelector />
+            
             <motion.button
               className="mobile-logout-btn"
               onClick={handleLogout}
               whileTap={{ scale: 0.95 }}
             >
-              <FiLogOut size={18} />
+              <LogOut size={18} />
               {t("navbar.logout")}
             </motion.button>
           </div>

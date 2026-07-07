@@ -25,7 +25,10 @@
     "assistant": "AI सहाय्यक",
     "schemes": "सरकारी योजना",
     "expenses": "खर्च",
-    "mandi": "मांडी दर"
+    "mandi": "मंडी भाव",
+    "logout": "लॉगआउट",
+    "disease": "Disease Detection",
+    "expense": "Expenses"
   },
   "auth": {
     "login": "लॉगइन",
@@ -76,7 +79,18 @@
     "yieldPrediction": "उपज अंदाज",
     "profitEstimation": "नफा अंदाज",
     "mandiPrices": "मांडी दर",
-    "noData": "डेटा उपलब्ध नाही"
+    "noData": "माहिती उपलब्ध नाही",
+    "title": "स्मार्ट शेतकरी डॅशबोर्ड",
+    "subtitle": "AI-चालित कृषी मंच",
+    "mandi": "मंडी भाव",
+    "disease": "पीक रोग ओळख",
+    "assistant": "AI कृषी सहाय्यक",
+    "analytics": "कृषी विश्लेषण",
+    "schemes": "सरकारी योजना",
+    "expense": "खर्च ट्रॅकर",
+    "pest": "Pest Alert",
+    "profit": "Profit Estimation",
+    "yield": "Yield Prediction"
   },
   "crop": {
     "title": "पीक सुझाव",
@@ -220,7 +234,11 @@
     "sunset": "सूर्यास्त",
     "rainProbability": "पाऊस संभावना",
     "uvIndex": "UV निर्देशांक",
-    "airQuality": "हवेची गुणवत्ता"
+    "airQuality": "हवेची गुणवत्ता",
+    "temperature": "तापमान",
+    "humidity": "दमटपणा",
+    "wind": "वाऱ्याचा वेग",
+    "feelsLike": "जाणवणारे तापमान"
   },
   "errors": {
     "networkError": "नेटवर्क त्रुटी. कृपया पुन्हा प्रयत्न करा.",

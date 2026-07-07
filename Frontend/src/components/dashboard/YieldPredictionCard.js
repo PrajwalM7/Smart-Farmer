@@ -1,38 +1,64 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../context/LanguageContext";
 import { motion } from "framer-motion";
-import { FiTrendingUp } from "react-icons/fi";
+import { FiTrendingUp, FiUser, FiArrowRight } from "react-icons/fi";
 import LoadingSpinner from "../LoadingSpinner";
 import "../../styles/DashboardCards.css";
 
-const YieldPredictionCard = () => {
+const ProfilePrompt = ({ message }) => {
+  const navigate = useNavigate();
+  return (
+    <div className="card-profile-prompt">
+      <span className="prompt-icon">📈</span>
+      <p>{message || "Complete your profile to get AI-powered yield predictions."}</p>
+      <button className="prompt-btn" onClick={() => navigate("/profile")}>
+        <FiUser size={14} /> Set Up Profile <FiArrowRight size={14} />
+      </button>
+    </div>
+  );
+};
+
+const YieldPredictionCard = ({ refreshKey = 0 }) => {
   const { t, language } = useLanguage();
   const [prediction, setPrediction] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchPrediction();
-  }, [language]);
-
-  const fetchPrediction = async () => {
+  const fetchPrediction = useCallback(async () => {
     try {
       setLoading(true);
+      const token = localStorage.getItem("token");
       const response = await axios.get(
-        `http://localhost:5000/yield?language=${language}`
+        `http://localhost:5000/yield?language=${language}`,
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      setPrediction(response.data.prediction);
-      setError(null);
+      if (response.data && response.data.success === false) {
+        setError(response.data.message || "AI services are temporarily unavailable.");
+        setPrediction(null);
+      } else {
+        setPrediction(response.data.prediction);
+        setError(null);
+      }
     } catch (err) {
       console.error("Yield fetch error:", err);
-      setError("Unable to fetch yield prediction");
+      const status = err?.response?.status;
+      if (status === 401 || status === 404) {
+        setPrediction(null);
+        setError(null);
+      } else {
+        setError("Unable to fetch yield prediction. Please try again.");
+      }
       setPrediction(null);
     } finally {
       setLoading(false);
     }
-  };
-  
+  }, [language]);
+
+  useEffect(() => {
+    fetchPrediction();
+  }, [fetchPrediction, refreshKey]);
 
   const getConfidenceColor = (score) => {
     if (score >= 80) return "#6bcf7f";
@@ -72,7 +98,7 @@ const YieldPredictionCard = () => {
               <span className="unit">kg/acre</span>
             </div>
             <div className="yield-total">
-              <span className="label">{t("yield.total") || "Total Expected"}</span>
+              <span className="label">{t("yield.total") || "Estimated Production"}</span>
               <span className="total">
                 {prediction.total_expected_yield_quintals || "--"} quintals
               </span>
@@ -138,10 +164,11 @@ const YieldPredictionCard = () => {
           )}
         </div>
       ) : (
-        <p className="no-data">{t("dashboard.noData") || "No data"}</p>
+        <ProfilePrompt message="Set your farm details (crop, soil, size) to get AI-powered yield predictions." />
       )}
     </motion.div>
   );
 };
 
 export default YieldPredictionCard;
+

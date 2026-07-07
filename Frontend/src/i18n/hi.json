@@ -25,7 +25,10 @@
     "assistant": "AI सहायक",
     "schemes": "सरकारी योजनाएं",
     "expenses": "खर्च",
-    "mandi": "मंडी भाव"
+    "mandi": "मंडी भाव",
+    "logout": "लॉगआउट",
+    "disease": "Disease Detection",
+    "expense": "Expenses"
   },
   "auth": {
     "login": "लॉगिन",
@@ -76,7 +79,18 @@
     "yieldPrediction": "पैदावार पूर्वानुमान",
     "profitEstimation": "लाभ अनुमान",
     "mandiPrices": "मंडी भाव",
-    "noData": "कोई डेटा उपलब्ध नहीं"
+    "noData": "कोई डेटा उपलब्ध नहीं",
+    "title": "स्मार्ट किसान डैशबोर्ड",
+    "subtitle": "एआई-संचालित कृषि मंच",
+    "mandi": "मंडी भाव",
+    "disease": "फसल रोग पहचान",
+    "assistant": "एआई कृषि सहायक",
+    "analytics": "कृषि विश्लेषण",
+    "schemes": "सरकारी योजनाएं",
+    "expense": "व्यय ट्रैकर",
+    "pest": "Pest Alert",
+    "profit": "Profit Estimation",
+    "yield": "Yield Prediction"
   },
   "crop": {
     "title": "फसल सिफारिशें",
@@ -220,7 +234,11 @@
     "sunset": "सूर्यास्त",
     "rainProbability": "वर्षा की संभावना",
     "uvIndex": "UV सूचकांक",
-    "airQuality": "वायु गुणवत्ता"
+    "airQuality": "वायु गुणवत्ता",
+    "temperature": "तापमान",
+    "humidity": "नमी",
+    "wind": "हवा की गति",
+    "feelsLike": "महसूस होता है"
   },
   "errors": {
     "networkError": "नेटवर्क त्रुटि। कृपया पुनः प्रयास करें।",

@@ -25,7 +25,10 @@
     "assistant": "AI ಸಹಾಯಕ",
     "schemes": "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು",
     "expenses": "ವೆಚ್ಚಗಳು",
-    "mandi": "ಮಂಡಿ ಬೆಲೆಗಳು"
+    "mandi": "ಮಂಡಿ ಬೆಲೆಗಳು",
+    "logout": "ನಿರ್ಗಮನ",
+    "disease": "Disease Detection",
+    "expense": "Expenses"
   },
   "auth": {
     "login": "ಲಾಗಿನ್",
@@ -76,7 +79,18 @@
     "yieldPrediction": "ಫಸಲು ಮುನ್ಸೂಚನೆ",
     "profitEstimation": "ಲಾಭ ಅಂದಾಜು",
     "mandiPrices": "ಮಂಡಿ ಬೆಲೆಗಳು",
-    "noData": "ಡೇಟಾ ಲಭ್ಯವಿಲ್ಲ"
+    "noData": "ಡೇಟಾ ಲಭ್ಯವಿಲ್ಲ",
+    "title": "ಸ್ಮಾರ್ಟ್ ರೈತ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+    "subtitle": "AI-ಚಾಲಿತ ಕೃಷಿ ವೇದಿಕೆ",
+    "mandi": "ಮಂಡಿ ಬೆಲೆಗಳು",
+    "disease": "ಬೆಳೆ ರೋಗ ಪತ್ತೆ",
+    "assistant": "AI ಕೃಷಿ ಸಹಾಯಕ",
+    "analytics": "ಕೃಷಿ ವಿಶ್ಲೇಷಣೆ",
+    "schemes": "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು",
+    "expense": "ವೆಚ್ಚ ಟ್ರ್ಯಾಕರ್",
+    "pest": "Pest Alert",
+    "profit": "Profit Estimation",
+    "yield": "Yield Prediction"
   },
   "crop": {
     "title": "ಬೆಳೆ ಸಿಫಾರಿಶುಗಳು",
@@ -220,7 +234,11 @@
     "sunset": "ಸೂರ್ಯಾಸ್ತ",
     "rainProbability": "ಮಳೆ ಸಂಭವನೀಯತೆ",
     "uvIndex": "UV ಸೂಚಿ",
-    "airQuality": "ಗಾಳಿ ಗುಣಮಟ್ಟ"
+    "airQuality": "ಗಾಳಿ ಗುಣಮಟ್ಟ",
+    "temperature": "ಉಷ್ಣತೆ",
+    "humidity": "ತೇವಾಂಶ",
+    "wind": "ಗಾಳಿಯ ವೇಗ",
+    "feelsLike": "ಅನಿಸಿಕೆ ಉಷ್ಣತೆ"
   },
   "errors": {
     "networkError": "ನೆಟ್‌ವರ್ಕ್ ದೋಷ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",

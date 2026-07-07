@@ -1,6 +1,7 @@
 const express = require("express");
 const axios = require("axios");
 const Profile = require("../models/Profile");
+const authMiddleware = require("../middleware/authMiddleware");
 const {
   generateAIResponse,
 } = require("../utils/aiClient");
@@ -20,7 +21,7 @@ const router = express.Router();
  * Get fertilizer recommendations based on profile
  * Query params: language (optional, default: en)
  */
-router.get("/", async (req, res, next) => {
+router.get("/", authMiddleware, async (req, res, next) => {
   try {
     const { language = "en" } = req.query;
 
@@ -32,7 +33,7 @@ router.get("/", async (req, res, next) => {
     }
 
     // Create cache key
-    const cacheKey = `fertilizer_recommendations_${language}`;
+    const cacheKey = `fertilizer_recommendations_${req.user.id}_${language}`;
 
     // Check cache (6 hour TTL for fertilizer info)
     if (cacheManager.has(cacheKey)) {
@@ -46,8 +47,8 @@ router.get("/", async (req, res, next) => {
       );
     }
 
-    // Fetch latest profile
-    const profile = await Profile.findOne().sort({ _id: -1 });
+    // Fetch user profile
+    const profile = await Profile.findOne({ userId: req.user.id });
 
     if (!profile) {
       logger.warn("No profile found for fertilizer recommendation");
@@ -152,10 +153,13 @@ Respond ONLY in ${language} language.`;
 
 try {
   fertilizeData = JSON.parse(responseText);
+  if (fertilizeData.success === false || !fertilizeData.npk_ratio) {
+    throw new Error("Invalid AI response");
+  }
 } catch (e) {
   fertilizeData = {
-    crop: profile.preferredCrop,
-    soil_type: profile.soilType,
+    crop: profile?.preferredCrop || "Rice",
+    soil_type: profile?.soilType || "Black Soil",
     npk_ratio: "19:19:19",
     total_estimated_cost: 2500,
     yield_improvement_percent: 15,
@@ -190,7 +194,7 @@ try {
  * POST /fertilizer/analyze
  * Analyze soil and provide detailed fertilizer plan
  */
-router.post("/analyze", async (req, res, next) => {
+router.post("/analyze", authMiddleware, async (req, res, next) => {
   try {
     const { soil_ph, soil_nitrogen, soil_potassium, soil_phosphorus, language = "en" } = req.body;
 
@@ -201,7 +205,7 @@ router.post("/analyze", async (req, res, next) => {
       );
     }
 
-    const profile = await Profile.findOne().sort({ _id: -1 });
+    const profile = await Profile.findOne({ userId: req.user.id });
 
     if (!profile) {
       return res.status(404).json(
@@ -209,7 +213,7 @@ router.post("/analyze", async (req, res, next) => {
       );
     }
 
-    const cacheKey = `fertilizer_analysis_${profile._id}_${language}`;
+    const cacheKey = `fertilizer_analysis_${req.user.id}_${language}`;
 
     if (cacheManager.has(cacheKey)) {
       return res.json(responseFormatter.advisory(cacheManager.get(cacheKey), "fertilizer", "Soil analysis"));
@@ -245,6 +249,9 @@ Respond ONLY in ${language} language.`;
 
 try {
   analysis = JSON.parse(responseText);
+  if (analysis.success === false || (!analysis.soil_health && !analysis.recommendation)) {
+    throw new Error("Invalid AI response");
+  }
 } catch (e) {
   analysis = {
     soil_health: "Good",

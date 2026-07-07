@@ -1,98 +1,119 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Register.css";
 
 function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setError("");
+    setSuccess("");
+    setLoading(true);
 
     try {
-      await axios.post(
-        "http://localhost:5000/auth/register",
-        {
-          name,
-          email,
-          password,
-        }
-      );
+      await axios.post("http://localhost:5000/auth/register", {
+        name,
+        email,
+        password,
+      });
 
-      alert("Registration Successful");
-
-      window.location.href = "/login";
-    } catch (error) {
-      alert(
-        error.response?.data?.message ||
-        "Registration Failed"
+      setSuccess("Account created! Redirecting to login...");
+      setTimeout(() => navigate("/login"), 1500);
+    } catch (err) {
+      setError(
+        err?.response?.data?.message || "Registration failed. Please try again."
       );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="register-container">
-
       <div className="register-card">
 
-        <div className="register-logo">🌾</div>
+        {/* Logo */}
+        <span className="register-logo">🌱</span>
+        <p className="register-brand">Smart Farmer</p>
+        <h1 className="register-title">Join the Platform</h1>
+        <p className="register-subtitle">Start your smart farming journey today</p>
 
-        <h1 className="register-title">
-          Farmer Registration
-        </h1>
+        {/* Alerts */}
+        {error && <div className="register-error">⚠️ {error}</div>}
+        {success && <div className="register-success">✅ {success}</div>}
 
-        <form onSubmit={handleRegister}>
+        {/* Form */}
+        <form className="register-form" onSubmit={handleRegister}>
+          <div className="register-input-wrapper">
+            <span className="register-input-icon">👤</span>
+            <input
+              id="register-name"
+              className="register-input"
+              type="text"
+              placeholder="Full name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              autoComplete="name"
+            />
+          </div>
 
-          <input
-            className="register-input"
-            type="text"
-            placeholder="Enter Name"
-            value={name}
-            onChange={(e) =>
-              setName(e.target.value)
-            }
-          />
+          <div className="register-input-wrapper">
+            <span className="register-input-icon">📧</span>
+            <input
+              id="register-email"
+              className="register-input"
+              type="email"
+              placeholder="Email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              autoComplete="email"
+            />
+          </div>
 
-          <input
-            className="register-input"
-            type="email"
-            placeholder="Enter Email"
-            value={email}
-            onChange={(e) =>
-              setEmail(e.target.value)
-            }
-          />
-
-          <input
-            className="register-input"
-            type="password"
-            placeholder="Enter Password"
-            value={password}
-            onChange={(e) =>
-              setPassword(e.target.value)
-            }
-          />
+          <div className="register-input-wrapper">
+            <span className="register-input-icon">🔒</span>
+            <input
+              id="register-password"
+              className="register-input"
+              type="password"
+              placeholder="Create password (min 6 chars)"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={6}
+              autoComplete="new-password"
+            />
+          </div>
 
           <button
+            id="register-submit-btn"
             className="register-btn"
             type="submit"
+            disabled={loading}
           >
-            Register
+            {loading ? "Creating account..." : "Create Account →"}
           </button>
-
         </form>
+
+        <p className="register-terms">
+          By registering, you agree to receive AI-powered farming insights.
+        </p>
 
         <p className="login-link">
           Already have an account?{" "}
-          <Link to="/login">
-            Login here
-          </Link>
+          <Link to="/login">Sign in</Link>
         </p>
-
       </div>
-
     </div>
   );
 }

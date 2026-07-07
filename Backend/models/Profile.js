@@ -1,6 +1,13 @@
 const mongoose = require("mongoose");
 
 const profileSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    index: true,
+    required: true,
+    unique: true
+  },
   // Personal Information
   name: {
     type: String,
@@ -8,14 +15,18 @@ const profileSchema = new mongoose.Schema({
   },
   phone: {
     type: String,
-    required: true
+    default: ""
   },
   email: {
-    type: String
+    type: String,
+    default: ""
   },
   
   // Location Information
-  village: String,
+  village: {
+    type: String,
+    default: ""
+  },
   district: {
     type: String,
     required: true
@@ -28,11 +39,16 @@ const profileSchema = new mongoose.Schema({
   // Farm Information
   farmSize: {
     type: Number, // in acres
-    required: true
+    required: true,
+    min: 0.1
   },
   soilType: {
     type: String,
-    enum: ["Black Soil", "Red Soil", "Laterite Soil", "Alluvial Soil", "Clay Soil", "Sandy Soil"],
+    enum: [
+      "Black Soil", "Black Cotton Soil", "Red Soil", "Laterite Soil",
+      "Alluvial Soil", "Clay Soil", "Sandy Soil", "Loamy Soil",
+      "Mountain Soil", "Other"
+    ],
     required: true
   },
   preferredCrop: {
@@ -43,8 +59,11 @@ const profileSchema = new mongoose.Schema({
   // Additional Farm Details
   irrigationType: {
     type: String,
-    enum: ["Drip", "Sprinkler", "Flood", "Mixed", "Rainfed"],
-    default: "Rainfed"
+    enum: [
+      "Drip", "Drip Irrigation", "Sprinkler", "Flood", "Flood Irrigation",
+      "Mixed", "Rainfed", "Canal", "Borewell", "Rainwater", "None", "Other"
+    ],
+    default: "None"
   },
   farmerType: {
     type: String,
@@ -71,9 +90,8 @@ const profileSchema = new mongoose.Schema({
 });
 
 // Update the updatedAt timestamp before saving
-profileSchema.pre('save', function(next) {
+profileSchema.pre('save', function() {
   this.updatedAt = Date.now();
-  next();
 });
 
 module.exports = mongoose.model("Profile", profileSchema);

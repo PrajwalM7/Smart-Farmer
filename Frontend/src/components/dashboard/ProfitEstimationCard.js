@@ -1,10 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../context/LanguageContext";
 import { motion } from "framer-motion";
-import { FiDollarSign } from "react-icons/fi";
+import { FiDollarSign, FiUser, FiArrowRight } from "react-icons/fi";
 import LoadingSpinner from "../LoadingSpinner";
 import "../../styles/DashboardCards.css";
+
+const ProfilePrompt = ({ message }) => {
+  const navigate = useNavigate();
+  return (
+    <div className="card-profile-prompt">
+      <span className="prompt-icon">💰</span>
+      <p>{message || "Complete your profile to get profit estimations."}</p>
+      <button className="prompt-btn" onClick={() => navigate("/profile")}>
+        <FiUser size={14} /> Set Up Profile <FiArrowRight size={14} />
+      </button>
+    </div>
+  );
+};
 
 const ProfitEstimationCard = () => {
   const { t, language } = useLanguage();
@@ -12,26 +26,39 @@ const ProfitEstimationCard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchProfit();
-  }, [language]);
-
-  const fetchProfit = async () => {
+  const fetchProfit = useCallback(async () => {
     try {
       setLoading(true);
+      const token = localStorage.getItem("token");
       const response = await axios.get(
-        `http://localhost:5000/profit?language=${language}`
+        `http://localhost:5000/profit?language=${language}`,
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      setProfit(response.data.data);
-      setError(null);
+      if (response.data && response.data.success === false) {
+        setError(response.data.message || "AI services are temporarily unavailable.");
+        setProfit(null);
+      } else {
+        setProfit(response.data.data);
+        setError(null);
+      }
     } catch (err) {
       console.error("Profit fetch error:", err);
-      setError("Unable to fetch profit estimation");
+      const status = err?.response?.status;
+      if (status === 401 || status === 404) {
+        setProfit(null);
+        setError(null);
+      } else {
+        setError("Unable to fetch profit estimation. Please try again.");
+      }
       setProfit(null);
     } finally {
       setLoading(false);
     }
-  };
+  }, [language]);
+
+  useEffect(() => {
+    fetchProfit();
+  }, [fetchProfit]);
 
   const getProfitColor = (value) => {
     if (value > 0) return "#6bcf7f";
@@ -65,13 +92,13 @@ const ProfitEstimationCard = () => {
         <div className="profit-content">
           <div className="profit-summary">
             <div className="summary-item">
-              <span className="label">{t("profit.investment") || "Investment"}</span>
+              <span className="label">{t("profit.investment") || "Total Cost"}</span>
               <span className="value">
                 ₹{profit.total_investment || "--"}
               </span>
             </div>
             <div className="summary-item">
-              <span className="label">{t("profit.revenue") || "Revenue"}</span>
+              <span className="label">{t("profit.revenue") || "Expected Income"}</span>
               <span className="value revenue">
                 ₹{profit.total_revenue || "--"}
               </span>
@@ -138,10 +165,11 @@ const ProfitEstimationCard = () => {
             )}
         </div>
       ) : (
-        <p className="no-data">{t("dashboard.noData") || "No data"}</p>
+        <ProfilePrompt message="Add your farm details to get AI-powered profit and ROI estimations." />
       )}
     </motion.div>
   );
 };
 
 export default ProfitEstimationCard;
+

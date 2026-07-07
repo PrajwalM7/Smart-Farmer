@@ -64,7 +64,17 @@ export const LanguageProvider = ({ children }) => {
       value = value?.[k];
     }
 
-    return value || key;
+    if (value !== undefined && value !== null) {
+      return value;
+    }
+
+    // Fall back to English
+    let enValue = translations['en'];
+    for (let k of keys) {
+      enValue = enValue?.[k];
+    }
+
+    return enValue || key;
   };
 
   const switchLanguage = (lang) => {

@@ -1,66 +1,67 @@
 const express = require("express");
+const mongoose = require("mongoose");
+const Profile = require("../models/Profile");
+const authMiddleware = require("../middleware/authMiddleware");
+
 const router = express.Router();
 
-const Profile = require("../models/Profile");
-
-// Create Profile
-router.post("/", async (req, res) => {
+// Create or Update Profile (upsert — avoids _id mutation errors)
+router.post("/", authMiddleware, async (req, res) => {
   try {
-    const profile = new Profile(req.body);
-    await profile.save();
+    const updateData = { ...req.body };
+    delete updateData._id;
+    delete updateData.userId;
 
-    res.status(201).json(profile);
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
-  }
-});
-
-// Get Latest Profile
-router.get("/latest", async (req, res) => {
-  try {
-    const profile = await Profile.findOne().sort({
-      _id: -1,
-    });
-
-    res.json(profile);
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
-  }
-});
-
-// Get All Profiles
-router.get("/", async (req, res) => {
-  try {
-    const profiles = await Profile.find();
-
-    res.json(profiles);
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
-  }
-});
-
-// Update Profile
-router.put("/:id", async (req, res) => {
-  try {
-    const profile = await Profile.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-      }
+    const profile = await Profile.findOneAndUpdate(
+      { userId: req.user.id },
+      { $set: updateData },
+      { upsert: true, new: true, runValidators: true, setDefaultsOnInsert: true }
     );
 
-    res.json(profile);
+    return res.json(profile);
   } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
+    console.error("[Profile POST] Error:", error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Get User's Latest Profile
+router.get("/latest", authMiddleware, async (req, res) => {
+  try {
+    const profile = await Profile.findOne({ userId: req.user.id });
+    res.json(profile || null);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Get All Profiles of User
+router.get("/", authMiddleware, async (req, res) => {
+  try {
+    const profiles = await Profile.find({ userId: req.user.id });
+    res.json(profiles);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Update Profile by ID (also upserts safely)
+router.put("/:id", authMiddleware, async (req, res) => {
+  try {
+    const updateData = { ...req.body };
+    delete updateData._id;
+    delete updateData.userId;
+
+    const profile = await Profile.findOneAndUpdate(
+      { userId: req.user.id },
+      { $set: updateData },
+      { upsert: true, new: true, runValidators: true, setDefaultsOnInsert: true }
+    );
+
+    return res.json(profile);
+  } catch (error) {
+    console.error("[Profile PUT] Error:", error.message);
+    res.status(500).json({ message: error.message });
   }
 });
 

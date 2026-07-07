@@ -1,12 +1,14 @@
 const express = require("express");
 const axios = require("axios");
 const { generateAIResponse } = require("../utils/aiClient");
+const authMiddleware = require("../middleware/authMiddleware");
 // Import utilities
 const validator = require("../utils/validator");
 const responseFormatter = require("../utils/responseFormatter");
 const logger = require("../utils/logger");
 const translations = require("../utils/translations");
-
+const { DEFAULT_TTL, getCacheKey } = require("../config/cacheConfig");
+const cacheManager = require("../utils/cacheManager");
 const router = express.Router();
 const Profile = require("../models/Profile");
 
@@ -15,7 +17,7 @@ const Profile = require("../models/Profile");
  * Get irrigation advisory based on profile and weather
  * Query params: language (optional, default: en)
  */
-router.get("/", async (req, res, next) => {
+router.get("/", authMiddleware, async (req, res, next) => {
   try {
     const { language = "en" } = req.query;
 
@@ -26,13 +28,13 @@ router.get("/", async (req, res, next) => {
       );
     }
 
-    const profile = await Profile.findOne().sort({ _id: -1 });
-
+    const profile = await Profile.findOne({ userId: req.user.id });
     if (!profile) {
       logger.warn("No profile found for irrigation advisory");
-      return res.status(404).json(
-        responseFormatter.error("Farmer profile not found", 404)
-      );
+      return res.status(404).json(responseFormatter.error("Farmer profile not found", 404));
+    }
+    if (!profile.state || !profile.district) {
+      return res.status(400).json(responseFormatter.error("Profile missing state or district information", 400));
     }
 
     // Validate profile
@@ -132,6 +134,12 @@ Return ONLY valid JSON:
 
 Respond ONLY in ${language} language.`;
 
+// Check cache before AI call
+const cacheKey = getCacheKey(state, district, crop, language);
+if (cacheManager.has(cacheKey)) {
+  const cached = cacheManager.get(cacheKey);
+  return res.json(responseFormatter.advisory(cached, "irrigation", translations.getTranslation(language, "irrigation.advisory_generated")));
+}
 let responseText = await generateAIResponse(prompt);
 
 responseText = responseText
@@ -143,6 +151,9 @@ let irrigationData;
 
 try {
   irrigationData = JSON.parse(responseText);
+  if (irrigationData.success === false || !irrigationData.daily_water_requirement_mm) {
+    throw new Error("Invalid AI response");
+  }
 } catch (err) {
   console.error(
     "Irrigation JSON Parse Error:",
@@ -150,9 +161,9 @@ try {
   );
 
   irrigationData = {
-    crop: profile.preferredCrop,
-    soil_type: profile.soilType,
-    irrigation_type: profile.irrigationType || "Rainfed",
+    crop: profile?.preferredCrop || "Rice",
+    soil_type: profile?.soilType || "Black Soil",
+    irrigation_type: profile?.irrigationType || "Rainfed",
 
     daily_water_requirement_mm: 50,
     daily_water_requirement_liters_per_acre: 10000,
@@ -209,13 +220,15 @@ try {
       crop: profile.preferredCrop
     });
 
-    res.json(
-      responseFormatter.advisory(
-        irrigationData,
-        "irrigation",
-        translations.getTranslation(language, "irrigation.advisory_generated")
-      )
-    );
+    // Store advisory in cache
+cacheManager.set(cacheKey, irrigationData, DEFAULT_TTL);
+return res.json(
+  responseFormatter.advisory(
+    irrigationData,
+    "irrigation",
+    translations.getTranslation(language, "irrigation.advisory_generated")
+  )
+);
 
   } catch (error) {
     logger.error("Error in irrigation route", error);
@@ -227,7 +240,7 @@ try {
  * POST /irrigation/schedule
  * Get detailed irrigation schedule for specific period
  */
-router.post("/schedule", async (req, res, next) => {
+router.post("/schedule", authMiddleware, async (req, res, next) => {
   try {
     const { month, language = "en" } = req.body;
 
@@ -243,7 +256,7 @@ router.post("/schedule", async (req, res, next) => {
       );
     }
 
-    const profile = await Profile.findOne().sort({ _id: -1 });
+    const profile = await Profile.findOne({ userId: req.user.id });
 
     if (!profile) {
       return res.status(404).json(
@@ -280,6 +293,9 @@ responseText = responseText
 
 try {
   schedule = JSON.parse(responseText);
+  if (schedule.success === false || !schedule.week1) {
+    throw new Error("Invalid AI response");
+  }
 } catch (err) {
   console.error(
     "Schedule JSON Parse Error:",
